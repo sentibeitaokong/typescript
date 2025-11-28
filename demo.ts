@@ -180,12 +180,202 @@ class Person{
 
 // 当成员被标记成private时，它就不能在声明它的类的外部访问。比如：
 class Student{
-    private  age:number
-    constructor( age:number){
+    constructor(private age:number){
         this.age=age
     }
 }
-//protected修饰符与private修饰符的行为很相似，但有一点不同，protected成员在派生类中仍然可以访问。例如：
+// new Student(18).age
+
+//protected修饰符与private修饰符的行为很相似，但有一点不同，protected成员在类内部和派生类中仍然可以访问。例如：
+class Father{
+    protected age:number
+    constructor(age:number){
+        this.age=age
+    }
+}
+class Son extends Father{
+    protected name:string
+    constructor(age:number,name:string) {
+        super(age);
+        this.name=name
+    }
+    getNameAndAge(){
+        return this.name +this.age;
+    }
+}
+// console.log(new Son(18,'xiaoming').getNameAndAge())
+// console.log(new Son(18,'xiaoming').name)  //实例对象无法访问
+
+//readonly
+class Mother{
+    readonly name:string
+    constructor(name:string){
+        this.name=name;
+    }
+}
+let mary=new Mother("Mary");
+// mary.name='Alice'  //不可修改
+
+//函数类型
+function increment(x:number, y:number):number{
+    return x+y
+}
+let myAdd:(x:number,y:number)=>number=increment  //完整类型
+let myAdd2=increment  //类型推断
+
+//默认参数，可选参数
+function decrement(x?:number,y=12):number {
+    if(x){
+        return x-y
+    }else{
+        return y
+    }
+}
+//剩余参数
+function getMax(x:number,...argument:number[]):number{
+    return Math.max(...arguments,x)
+}
+console.log(getMax(5,2,4))
+//回调函数this
+class Handler{
+    info:string
+    constructor(info:string) {
+        this.info=info
+    }
+    onClick=(e:Event)=>{this.info=(e.target as HTMLInputElement).value}
+}
+
+//泛型
+//泛型变量 打印参数的length T可以改成别的参数名
+function identity<T>(arg:T[]) :T[]{
+    console.log(arg.length)
+    return arg
+}
+
+//泛型接口
+interface GenericIdentityFn<T>{
+    (arg:T):T
+}
+function nextIdentity<T>(arg:T) :T{
+    return arg
+}
+let currentIdentity:GenericIdentityFn<number>=nextIdentity
+
+//泛型类
+class genericNumber<T>{
+    value:T
+    add: ((x: T, y: T) => T | undefined) | undefined;
+    constructor(value:T){
+        this.value=value
+    }
+
+}
+let myGeneric=new genericNumber<number>(18)
+myGeneric.value=10
+myGeneric.add=function (x,y) {
+    return x+y
+}
+
+//泛型约束
+interface LengthWise{
+    length:number
+}
+function nextExtendsIdentity<T extends LengthWise>(arg:T) :T{
+    console.log(arg.length)
+    return arg
+}
+// 获取对象属性
+function getProperty<T,K extends keyof T>(obj:T,Key:K){
+    return obj[Key]
+}
+//获得类类型
+function create<T>(c:{new():T}):T{
+    return new c()
+}
+
+//typeof类型保护 联合类型
+function padLeft(value:string,padding:number|string){
+    if(typeof padding=='string'){
+        return padding+value
+    }
+    if(typeof padding==='number'){
+        return Array(padding+1).join(' ')+value
+    }
+    throw new Error(`Expected string or number, got '${padding}'.`);
+}
+
+//instanceof类型保护
+interface Padder {
+    getPaddingString(): string
+}
+
+class SpaceRepeatingPadder implements Padder {
+    constructor(private numSpaces: number) { }
+    getPaddingString() {
+        return Array(this.numSpaces + 1).join(" ");
+    }
+}
+
+class StringPadder implements Padder {
+    constructor(private value: string) { }
+    getPaddingString() {
+        return this.value;
+    }
+}
+
+function getRandomPadder() {
+    return Math.random() < 0.5 ?
+        new SpaceRepeatingPadder(4) :
+        new StringPadder("  ");
+}
+
+// 类型为SpaceRepeatingPadder | StringPadder
+let padder: Padder = getRandomPadder();
+
+if (padder instanceof SpaceRepeatingPadder) {
+    // padder; // 类型细化为'SpaceRepeatingPadder'
+}
+if (padder instanceof StringPadder) {
+    // padder; // 类型细化为'StringPadder'
+}
+
+//类型别名
+type Name='string'
+type Age='number'
+
+// 联合类型
+type width=number|string
+
+//交叉类型
+type Area={
+    heigth:number;
+    width:number;
+}
+type  Address={
+    num:number
+    cell:number,
+    room:number
+}
+type House=Area&Address
+let house:House={
+    heigth:18,
+    width:20,
+    num:21,
+    cell:100,
+    room:200
+}
+
+//字符串字面量类型
+type MyName='Mary' |'Bob'|'Nick'
+
+//索引类型和字符串索引签名
+interface Map<T> {
+    [key: string]: T;
+}
+let keys: keyof Map<number>; // string
+let value: Map<number>['foo']; // number
+
+
 
 
 

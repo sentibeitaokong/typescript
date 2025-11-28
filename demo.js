@@ -110,6 +110,153 @@ class Dog extends Animals {
 const dog = new Dog();
 dog.move(10);
 dog.bark();
-export {};
 //公共，私有与受保护的修饰符
-//默认公开 public
+//默认公开 public 类内部外部以及子类都能访问
+class Person {
+    constructor(name) {
+        this.name = name;
+        this.name = name;
+    }
+}
+// 当成员被标记成private时，它就不能在声明它的类的外部访问。比如：
+class Student {
+    constructor(age) {
+        this.age = age;
+        this.age = age;
+    }
+}
+// new Student(18).age
+//protected修饰符与private修饰符的行为很相似，但有一点不同，protected成员在类内部和派生类中仍然可以访问。例如：
+class Father {
+    constructor(age) {
+        this.age = age;
+    }
+}
+class Son extends Father {
+    constructor(age, name) {
+        super(age);
+        this.name = name;
+    }
+    getNameAndAge() {
+        return this.name + this.age;
+    }
+}
+// console.log(new Son(18,'xiaoming').getNameAndAge())
+// console.log(new Son(18,'xiaoming').name)  //实例对象无法访问
+//readonly
+class Mother {
+    constructor(name) {
+        this.name = name;
+    }
+}
+let mary = new Mother("Mary");
+// mary.name='Alice'  //不可修改
+//函数类型
+function increment(x, y) {
+    return x + y;
+}
+let myAdd = increment; //完整类型
+let myAdd2 = increment; //类型推断
+//默认参数，可选参数
+function decrement(x, y = 12) {
+    if (x) {
+        return x - y;
+    }
+    else {
+        return y;
+    }
+}
+//剩余参数
+function getMax(x, ...argument) {
+    return Math.max(...arguments, x);
+}
+console.log(getMax(5, 2, 4));
+//回调函数this
+class Handler {
+    constructor(info) {
+        this.onClick = (e) => { this.info = e.target.value; };
+        this.info = info;
+    }
+}
+//泛型
+//泛型变量 打印参数的length T可以改成别的参数名
+function identity(arg) {
+    console.log(arg.length);
+    return arg;
+}
+function nextIdentity(arg) {
+    return arg;
+}
+let currentIdentity = nextIdentity;
+//泛型类
+class genericNumber {
+    constructor(value) {
+        this.value = value;
+    }
+}
+let myGeneric = new genericNumber(18);
+myGeneric.value = 10;
+myGeneric.add = function (x, y) {
+    return x + y;
+};
+function nextExtendsIdentity(arg) {
+    console.log(arg.length);
+    return arg;
+}
+// 获取对象属性
+function getProperty(obj, Key) {
+    return obj[Key];
+}
+//获得类类型
+function create(c) {
+    return new c();
+}
+//typeof类型保护 联合类型
+function padLeft(value, padding) {
+    if (typeof padding == 'string') {
+        return padding + value;
+    }
+    if (typeof padding === 'number') {
+        return Array(padding + 1).join(' ') + value;
+    }
+    throw new Error(`Expected string or number, got '${padding}'.`);
+}
+class SpaceRepeatingPadder {
+    constructor(numSpaces) {
+        this.numSpaces = numSpaces;
+    }
+    getPaddingString() {
+        return Array(this.numSpaces + 1).join(" ");
+    }
+}
+class StringPadder {
+    constructor(value) {
+        this.value = value;
+    }
+    getPaddingString() {
+        return this.value;
+    }
+}
+function getRandomPadder() {
+    return Math.random() < 0.5 ?
+        new SpaceRepeatingPadder(4) :
+        new StringPadder("  ");
+}
+// 类型为SpaceRepeatingPadder | StringPadder
+let padder = getRandomPadder();
+if (padder instanceof SpaceRepeatingPadder) {
+    // padder; // 类型细化为'SpaceRepeatingPadder'
+}
+if (padder instanceof StringPadder) {
+    // padder; // 类型细化为'StringPadder'
+}
+let house = {
+    heigth: 18,
+    width: 20,
+    num: 21,
+    cell: 100,
+    room: 200
+};
+let keys; // string
+let value; // number
+export {};
