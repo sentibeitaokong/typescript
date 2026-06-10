@@ -257,6 +257,6 @@ let house = {
     cell: 100,
     room: 200
 };
-let keys; // string
+let keys; // string | number
 let value; // number
 export {};

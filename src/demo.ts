@@ -372,7 +372,7 @@ type MyName='Mary' |'Bob'|'Nick'
 interface Map<T> {
     [key: string]: T;
 }
-let keys: keyof Map<number>; // string
+let keys: keyof Map<number>; // string | number
 let value: Map<number>['foo']; // number
 
 
